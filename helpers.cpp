@@ -20,6 +20,37 @@
 using namespace std;
 
 /**
+    Creates a grid of zeros
+
+    For example:
+
+    zeros(2, 3) would return
+
+    0.0  0.0  0.0
+    0.0  0.0  0.0
+
+    @param height - the height of the desired grid
+
+    @param width - the width of the desired grid.
+
+    @return a grid of zeros (floats)
+*/
+vector < vector <float> > zeros(int height, int width) {
+	int i, j;
+	vector < vector <float> > newGrid;
+	vector <float> newRow;
+
+	for (i=0; i<height; i++) {
+		newRow.clear();
+		for (j=0; j<width; j++) {
+			newRow.push_back(0.0);
+		}
+		newGrid.push_back(newRow);
+	}
+	return newGrid;
+}
+
+/**
 	TODO - implement this function
 
     Normalizes a grid of numbers. 
@@ -33,11 +64,20 @@ using namespace std;
 */
 vector< vector<float> > normalize(vector< vector <float> > grid) {
 	
-	vector< vector<float> > newGrid;
+	float prob_sum = 0.0;
 
-	// todo - your code here
+	for (auto row : grid) { // access by value
+		for (auto cell : row) {
+			prob_sum += cell;
+		}
+	}
 
-	return newGrid;
+	for (auto& row : grid) { // access by forwarding reference
+		for (auto& cell: row) {
+			cell /= prob_sum;
+		}
+	}
+	return grid;
 }
 
 /**
@@ -74,10 +114,32 @@ vector< vector<float> > normalize(vector< vector <float> > grid) {
     	   has been blurred.
 */
 vector < vector <float> > blur(vector < vector < float> > grid, float blurring) {
+	const float prob_center = 1.0 - blurring;
+	const float prob_corner = blurring / 12.0;
+	const float prob_notcorner = blurring / 6.0;
 
-	vector < vector <float> > newGrid;
+	vector < vector < float> > window {{prob_corner, prob_notcorner, prob_corner},
+					{prob_notcorner, prob_center, prob_notcorner},
+					{prob_corner, prob_notcorner, prob_corner}
+					};
+
+	const int row = grid.size();
+	const int column = grid[0].size();
+	vector < vector <float> > newGrid = zeros(row, column);
 	
-	// your code here
+	for (int i = 0; i < row; i++){
+		for (int j = 0; j < column; j++) {
+			float grid_val = grid[i][j];
+			for (int dx : {-1, 0, 1}) {
+				for (int dy : {-1, 0, 1}) {
+					int new_i = (i + dy + row) % row;
+					int new_j = (j + dx + column) % column;
+					float mult = window[dx+1][dy+1];
+					newGrid[new_i][new_j] += grid_val * mult;
+				}
+			}
+		}
+	}
 
 	return normalize(newGrid);
 }
@@ -89,7 +151,6 @@ vector < vector <float> > blur(vector < vector < float> > grid, float blurring) 
 #
 #
 # ------------------------------------------------- */
-
 
 /**
     Determines when two grids of floating point numbers 
@@ -182,37 +243,6 @@ vector < vector <char> > read_map(string file_name) {
 		}
 	}
 	return map;
-}
-
-/**
-    Creates a grid of zeros
-
-    For example:
-
-    zeros(2, 3) would return
-
-    0.0  0.0  0.0
-    0.0  0.0  0.0
-
-    @param height - the height of the desired grid
-
-    @param width - the width of the desired grid.
-
-    @return a grid of zeros (floats)
-*/
-vector < vector <float> > zeros(int height, int width) {
-	int i, j;
-	vector < vector <float> > newGrid;
-	vector <float> newRow;
-
-	for (i=0; i<height; i++) {
-		newRow.clear();
-		for (j=0; j<width; j++) {
-			newRow.push_back(0.0);
-		}
-		newGrid.push_back(newRow);
-	}
-	return newGrid;
 }
 
 // int main() {
