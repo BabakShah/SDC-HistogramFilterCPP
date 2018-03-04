@@ -163,9 +163,9 @@ vector< vector <float> > move(int dy, int dx,
 
   for (int i = 0; i < row; i++) {
     for (int j = 0; j < column; j++) {
-      int new_i = (i + dy + row) % row;
-      int new_j = (j + dx + column) % column;
-      newGrid[new_i][new_j] = beliefs[i][j];
+      int new_row = (i + dy + row) % row;
+      int new_column = (j + dx + column) % column;
+      newGrid[new_row][new_column] = beliefs[i][j];
     }
   }
 

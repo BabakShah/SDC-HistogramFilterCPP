@@ -66,13 +66,13 @@ vector< vector<float> > normalize(vector< vector <float> > grid) {
 	
 	float prob_sum = 0.0;
 
-	for (auto row : grid) { // access by value
+	for (auto row : grid) { 
 		for (auto cell : row) {
 			prob_sum += cell;
 		}
 	}
 
-	for (auto& row : grid) { // access by forwarding reference
+	for (auto& row : grid) { 
 		for (auto& cell: row) {
 			cell /= prob_sum;
 		}
@@ -129,13 +129,11 @@ vector < vector <float> > blur(vector < vector < float> > grid, float blurring) 
 	
 	for (int i = 0; i < row; i++){
 		for (int j = 0; j < column; j++) {
-			float grid_val = grid[i][j];
 			for (int dx : {-1, 0, 1}) {
 				for (int dy : {-1, 0, 1}) {
-					int new_i = (i + dy + row) % row;
-					int new_j = (j + dx + column) % column;
-					float mult = window[dx+1][dy+1];
-					newGrid[new_i][new_j] += grid_val * mult;
+					int new_row = (i + dy + row) % row;
+					int new_column = (j + dx + column) % column;
+					newGrid[new_row][new_column] += grid[i][j] * window[dx+1][dy+1];
 				}
 			}
 		}
