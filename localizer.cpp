@@ -43,11 +43,8 @@ vector< vector <float> > initialize_beliefs(vector< vector <char> > grid) {
 	int row = grid.size();
   int column = grid[0].size();
   int size = row * column;
-
   float cell_belief = 1.0/size;
 
-  // vector initialization 
-  // http://www.cplusplus.com/reference/vector/vector/vector/
   vector< vector <float> > newGrid(row, std::vector<float> (column, cell_belief));
 	
 	return newGrid;
